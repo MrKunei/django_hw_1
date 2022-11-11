@@ -16,14 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from ads.views import AdView, CategoryView, AdDetailView, CategoryDetailView
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("ads.urls")),
-    path('ad/', AdView.as_view()),
-    path('cat/', CategoryView.as_view()),
-    path('ad/<int:pk>', AdDetailView.as_view()),
-    path('cat/<int:pk>', CategoryDetailView.as_view())
+
 
 ]
