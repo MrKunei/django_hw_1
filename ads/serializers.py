@@ -85,7 +85,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
         for location in self._locations:
             obj, _ = Location.objects.get_or_create(name=location)
-            user.lication.clear()
+            user.location.clear()
             user.location.add(obj)
         user.save()
         return user
