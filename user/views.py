@@ -1,5 +1,4 @@
-from django.db.models import Count
-from django.shortcuts import render
+from django.db.models import Count, Q
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView, \
     RetrieveAPIView, DestroyAPIView
 from rest_framework.viewsets import ModelViewSet
@@ -17,6 +16,7 @@ from user.serializers import (
 class LocationViewSet(ModelViewSet):
     queryset = Location.objects.all()
     serializer_class = LocationSerializer
+
 
 
 class UserListView(ListAPIView):
@@ -39,9 +39,9 @@ class UserDetailView(RetrieveAPIView):
     serializer_class = UserListSerializer
 
 
-# class UserAdDetailView(ListAPIView):
-#     queryset = User.objects.annotate(total_ads=Count('ad', filter=Q(ad__is_published=True)))
-#     serializer_class = UserAdSerializer
+class UserAdDetailView(ListAPIView):
+    queryset = User.objects.annotate(total_ads=Count('ad', filter=Q(ad__is_published=True)))
+    serializer_class = UserAdSerializer
 
 
 class UserDeleteView(DestroyAPIView):

@@ -1,19 +1,18 @@
-from django.db.models import Count, Q
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse
 from ads.models import Ad, Category
-from rest_framework.generics import *
+from rest_framework.generics import (ListAPIView,
+                                     CreateAPIView,
+                                     UpdateAPIView,
+                                     RetrieveAPIView,
+                                     DestroyAPIView)
 from ads.serializers import *
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
-
+from user.permissions import AdUpdateDeletePermission
 
 
 def index(request):
     return JsonResponse({"status": "ok"}, status=200)
-
-
-# class LocationViewSet(ModelViewSet):
-#     queryset = Location.objects.all()
-#     serializer_class = LocationSerializer
 
 
 class CategoryViewSet(ModelViewSet):
@@ -43,7 +42,7 @@ class AdListView(ListAPIView):
         price_to = request.GET.get('price_to', 100000)
         if price_from or price_to:
             self.queryset = self.queryset.filter(
-                price__range=[price_from,price_to])
+                price__range=[price_from, price_to])
 
         return super().get(request, *args, **kwargs)
 
@@ -51,6 +50,7 @@ class AdListView(ListAPIView):
 class AdDetailView(RetrieveAPIView):
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class AdCreateView(CreateAPIView):
@@ -61,11 +61,13 @@ class AdCreateView(CreateAPIView):
 class AdUpdateView(UpdateAPIView):
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
+    permission_classes = [IsAuthenticated, AdUpdateDeletePermission]
 
 
 class AdDeleteView(DestroyAPIView):
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
+    permission_classes = [IsAuthenticated, AdUpdateDeletePermission]
 
 
 class AdImageView(UpdateAPIView):
@@ -73,31 +75,19 @@ class AdImageView(UpdateAPIView):
     serializer_class = AdUpdateImageSerializer
 
 
-# class UserListView(ListAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserListSerializer
-#
-#
-# class UserCreateView(CreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserCreateSerializer
-#
-#
-# class UserUpdateView(UpdateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserUpdateSerializer
-#
-#
-# class UserDetailView(RetrieveAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserListSerializer
-#
-#
-# class UserAdDetailView(ListAPIView):
-#     queryset = User.objects.annotate(total_ads=Count('ad', filter=Q(ad__is_published=True)))
-#     serializer_class = UserAdSerializer
-#
-#
-# class UserDeleteView(DestroyAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = UserListSerializer
+class SelectionListView(ListAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionSerializer
+
+
+class SelectionCreateView(CreateAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionSerializer
+
+
+class SelectionDetailView(RetrieveAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionDetailSerializer
+
+
+

@@ -29,6 +29,7 @@ class Command(BaseCommand):
                     role=d['role'],
                     age=d['age']
                 )
+
                 user.save()
                 user.location.add(Location.objects.get(pk=d['location_id']))
                 user.save()
