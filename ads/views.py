@@ -50,7 +50,7 @@ class AdListView(ListAPIView):
 class AdDetailView(RetrieveAPIView):
     queryset = Ad.objects.all()
     serializer_class = AdSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, AdUpdateDeletePermission]
 
 
 class AdCreateView(CreateAPIView):
