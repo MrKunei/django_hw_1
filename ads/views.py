@@ -1,5 +1,4 @@
 from django.http import JsonResponse
-from ads.models import Ad, Category
 from rest_framework.generics import (ListAPIView,
                                      CreateAPIView,
                                      UpdateAPIView,
