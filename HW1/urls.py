@@ -4,7 +4,7 @@ from ads.views import index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", index),
+    path('', index),
     path('', include("ads.urls")),
-    path('user/', include('user.urls'))
+    path('', include('user.urls'))
 ]

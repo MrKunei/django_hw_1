@@ -28,6 +28,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLES, default=MEMBER)
     age = models.SmallIntegerField(null=True)
     location = models.ManyToManyField(Location)
+    # birth_date = models.DateField(null=True, blank=True)
 
     class Meta:
         verbose_name = 'Пользователь'

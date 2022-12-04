@@ -1,10 +1,18 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import MinLengthValidator, MinValueValidator
 from django.db import models
 
 from user.models import User
 
 
+def published_validator(value):
+    if value:
+        raise ValidationError("Нельзя создать опубликованное объявление!")
+
+
 class Category(models.Model):
     name = models.CharField(max_length=255)
+    slug = models.CharField(max_length=10, unique=True, validators=[MinLengthValidator(5)])
 
     class Meta:
         verbose_name = 'Категория'
@@ -15,11 +23,11 @@ class Category(models.Model):
 
 
 class Ad(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, validators=[MinLengthValidator(10)])
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    price = models.IntegerField()
+    price = models.IntegerField(validators=[MinValueValidator(0)])
     description = models.TextField(null=True)
-    is_published = models.BooleanField()
+    is_published = models.BooleanField(validators=[published_validator])
     image = models.ImageField(upload_to='images/', null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 

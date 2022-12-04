@@ -1,23 +1,13 @@
 from rest_framework import serializers
-from .models import *
+from rest_framework.validators import UniqueValidator
 
+from .models import *
+from .validators import DomainValidator, BirthDayValidator
 
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = "__all__"
-
-
-class UserListSerializer(serializers.ModelSerializer):
-    location = serializers.SlugRelatedField(
-        slug_field='name',
-        many=True,
-        read_only=True
-    )
-
-    class Meta:
-        model = User
         fields = "__all__"
 
 
@@ -33,16 +23,20 @@ class UserAdSerializer(serializers.ModelSerializer):
         model =User
         fields = "__all__"
 
-class UserCreateSerializer(serializers.ModelSerializer):
+
+class UserSerializer(serializers.ModelSerializer):
     location = serializers.SlugRelatedField(
         slug_field='name',
         many=True,
         required=False,
         queryset=Location.objects.all()
     )
+    email = serializers.EmailField(validators=[DomainValidator('rambler.ru'),
+                                               UniqueValidator(queryset=User.objects.all())])
+    # birth_date = serializers.DateField(validators=[BirthDayValidator])
 
     def is_valid(self, *, raise_exception=False):
-        self._location = self.initial_data.pop('location', [])
+        self._location = self.initial_data.pop('location')
         super().is_valid(raise_exception=raise_exception)
 
     def create(self, validated_data):
@@ -56,25 +50,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    class Meta:
-        model = User
-        fields = "__all__"
-
-
-class UserUpdateSerializer(serializers.ModelSerializer):
-    location = serializers.SlugRelatedField(
-        slug_field='name',
-        many=True,
-        required=False,
-        queryset=User.objects.all()
-    )
-
-    def is_valid(self, *, raise_exception=False):
-        self._location = self.initial_data.pop('location')
-        super().is_valid(raise_exception=raise_exception)
-
     def save(self):
         user = super().save()
+        user.set_password(user.password)
 
         user.location.clear()
         for loc in self._location:

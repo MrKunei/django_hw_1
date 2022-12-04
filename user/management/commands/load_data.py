@@ -25,11 +25,10 @@ class Command(BaseCommand):
                     first_name=d['first_name'],
                     last_name=d['last_name'],
                     username=d['username'],
-                    password=d['password'],
                     role=d['role'],
                     age=d['age']
                 )
-
+                user.set_password(d['password'])
                 user.save()
                 user.location.add(Location.objects.get(pk=d['location_id']))
                 user.save()
