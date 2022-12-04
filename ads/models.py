@@ -12,7 +12,7 @@ def published_validator(value):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.CharField(max_length=10, unique=True, validators=[MinLengthValidator(5)])
+    slug = models.CharField(max_length=10, null=True, unique=True, validators=[MinLengthValidator(5)])
 
     class Meta:
         verbose_name = 'Категория'

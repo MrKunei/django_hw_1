@@ -33,7 +33,7 @@ class UserSerializer(serializers.ModelSerializer):
     )
     email = serializers.EmailField(validators=[DomainValidator('rambler.ru'),
                                                UniqueValidator(queryset=User.objects.all())])
-    # birth_date = serializers.DateField(validators=[BirthDayValidator])
+    birth_date = serializers.DateField(validators=[BirthDayValidator()])
 
     def is_valid(self, *, raise_exception=False):
         self._location = self.initial_data.pop('location')

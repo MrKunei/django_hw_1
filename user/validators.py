@@ -1,5 +1,4 @@
-from django.db.models import Func, F
-from django.db.models.functions import ExtractYear
+from datetime import date
 from rest_framework import serializers
 
 
@@ -17,7 +16,7 @@ class DomainValidator():
 
 
 class BirthDayValidator():
-    def __call__(self, date):
-        age = ExtractYear(Func(F('date'), function='age'))
-        if age < 9:
-            raise serializers.ValidationError('Вы младше 9 лет!')
+    def __call__(self, value: date):
+        delta = date.today() - value
+        if delta.days/365 < 9:
+            raise serializers.ValidationError('Регистрация пользователя младше 9 лет запрещена!')
